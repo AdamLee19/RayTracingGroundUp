@@ -13,7 +13,6 @@ include_directories("src/Utilities")
 include_directories("src/World")
 include_directories("src/Tracers")
 include_directories("src/GeometricObjects")
-include_directories("src/UserInterface")
 include_directories("src/build")
 include_directories("src/stb")
 
@@ -21,7 +20,7 @@ include_directories("src/stb")
 
 set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
-set(CMAKE_CXX_FLAGS "-std=c++11")
+set(CMAKE_CXX_FLAGS "-std=c++11 -O3")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
@@ -105,11 +104,11 @@ target_link_libraries (tracer libRTF)
 enable_testing ()
 
 
-SET_DIRECTORY_PROPERTIES(
-  PROPERTIES
-  ADDITIONAL_CLEAN_FILES
-  "${CMAKE_CURRENT_SOURCE_DIR}/build"
-)
+# SET_DIRECTORY_PROPERTIES(
+#   PROPERTIES
+#   ADDITIONAL_CLEAN_FILES
+#   "${CMAKE_CURRENT_SOURCE_DIR}/build"
+# )
 
 
 

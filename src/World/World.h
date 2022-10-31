@@ -36,8 +36,7 @@ class World {
 		Sphere 						sphere;		// for Chapter 3 only
 		vector<GeometricObject*>	objects;		
 		
-		uint8_t* img_pixels;	
-			
+		mutable uint8_t *imageData;		
 
 	public:
 	
@@ -66,8 +65,6 @@ class World {
 		ShadeRec									
 		hit_bare_bones_objects(const Ray& ray);
 
-		void write_color(std::ostream &out, const RGBColor& pixel_color) const;
-						
 	private:
 		
 		void 

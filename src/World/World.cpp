@@ -66,7 +66,7 @@ World::render_scene(void) const {
 	float		s		= vp.s;
 	float		zw		= 100.0;			// hardwired in
 
-	std::cout << "P3\n" << hres << ' ' << vres << "\n255\n";
+	imageData = new uint8_t [hres * vres * 3];
 
 	ray.d = Vector3D(0, 0, -1);
 	
@@ -77,7 +77,10 @@ World::render_scene(void) const {
 			ray.o = Point3D(s * (c - hres / 2.0 + 0.5), s * (r - vres / 2.0 + 0.5), zw);
 			pixel_color = tracer_ptr->trace_ray(ray);
 			display_pixel(r, c, pixel_color);
-		}	
+		}
+
+	stbi_write_jpg("test.jpg", hres, vres, 3, imageData, 100);	
+	delete[] imageData;
 }  
 
 
@@ -137,7 +140,9 @@ World::display_pixel(const int row, const int column, const RGBColor& raw_color)
    int x = column;
    int y = vp.vres - row - 1;
 
-  write_color(std::cout, mapped_color);
+	imageData[(row * vp.hres + column) * 3    ] = (uint8_t)(mapped_color.r * 255);
+	imageData[(row * vp.hres + column) * 3 + 1] = (uint8_t)(mapped_color.g * 255);
+	imageData[(row * vp.hres + column) * 3 + 2] = (uint8_t)(mapped_color.b * 255);
 }
 
 
@@ -178,28 +183,3 @@ World::delete_objects(void) {
 	
 	objects.erase (objects.begin(), objects.end());
 }
-
-void World::write_color(std::ostream &out, const RGBColor& pixel_color) const{
-    auto r = pixel_color.r;
-    auto g = pixel_color.g;
-    auto b = pixel_color.b;
-
-    // // Replace NaN components with zero. See explanation in Ray Tracing: The Rest of Your Life.
-    // if (r != r) r = 0.0;
-    // if (g != g) g = 0.0;
-    // if (b != b) b = 0.0;
-
-    // // Divide the color by the number of samples and gamma-correct for gamma=2.0.
-    // auto scale = 1.0 / samples_per_pixel;
-    // r = sqrt(scale * r);
-    // g = sqrt(scale * g);
-    // b = sqrt(scale * b);
-
-
-    // Write the translated [0,255] value of each color component.
-    out << (r * 255) << ' '
-        << (g * 255) << ' '
-        << (b * 255) << '\n';
-}
-
-
