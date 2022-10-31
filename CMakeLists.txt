@@ -13,8 +13,8 @@ include_directories("src/Utilities")
 include_directories("src/World")
 include_directories("src/Tracers")
 include_directories("src/GeometricObjects")
-include_directories("src/build")
-include_directories("src/stb")
+include_directories("src/Build")
+include_directories("src/Stb")
 
 
 
@@ -43,7 +43,7 @@ set (SOURCE_GEOMETRICOBJECTS
 
 
 set (SOURCE_STB
-  src/stb/stb_image_write.h
+  src/Stb/stb_image_write.h
 )
 
 
@@ -85,7 +85,7 @@ source_group ("src/GeometricObjects" FILES ${SOURCE_GEOMETRICOBJECTS})
 source_group ("src/Tracers" FILES ${SOURCE_TRACERS})
 source_group ("src/Utilities" FILES ${SOURCE_UTILITIES})
 source_group ("src/World" FILES ${SOURCE_WORLD})
-source_group ("src/stb" FILES ${SOURCE_STB})
+source_group ("src/Stb" FILES ${SOURCE_STB})
 
 add_library (libRTF STATIC
   ${SOURCE_GEOMETRICOBJECTS}
