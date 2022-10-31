@@ -51,6 +51,8 @@ set (SOURCE_STB
 set (SOURCE_TRACERS
   src/Tracers/SingleSphere.cpp
   src/Tracers/SingleSphere.h
+  src/Tracers/MultipleObjects.cpp
+  src/Tracers/MultipleObjects.h
   src/Tracers/Tracer.cpp
   src/Tracers/Tracer.h
 )

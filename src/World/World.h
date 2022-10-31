@@ -13,7 +13,6 @@
 
 
 #include <vector>
-#include <iostream>
 
 #include "ViewPlane.h"
 #include "RGBColor.h"
