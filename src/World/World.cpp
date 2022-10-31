@@ -140,9 +140,9 @@ World::display_pixel(const int row, const int column, const RGBColor& raw_color)
    int x = column;
    int y = vp.vres - row - 1;
 
-	imageData[(row * vp.hres + column) * 3    ] = (uint8_t)(mapped_color.r * 255);
-	imageData[(row * vp.hres + column) * 3 + 1] = (uint8_t)(mapped_color.g * 255);
-	imageData[(row * vp.hres + column) * 3 + 2] = (uint8_t)(mapped_color.b * 255);
+	imageData[(y * vp.hres + x) * 3    ] = (uint8_t)(mapped_color.r * 255);
+	imageData[(y * vp.hres + x) * 3 + 1] = (uint8_t)(mapped_color.g * 255);
+	imageData[(y * vp.hres + x) * 3 + 2] = (uint8_t)(mapped_color.b * 255);
 }
 
 
