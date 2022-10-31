@@ -25,8 +25,8 @@
 
 // build functions
 
-#include "BuildSingleSphere.cpp"
-//#include "BuildMultipleObjects.cpp"
+// #include "BuildSingleSphere.cpp"
+#include "BuildMultipleObjects.cpp"
 //#include "BuildBBCoverPic.cpp"
 
 
@@ -72,8 +72,6 @@ World::render_scene(void) const {
 	
 	for (int r = 0; r < vres; r++)			// up
 		for (int c = 0; c < hres; c++) {	// across 					
-	// for (int r = hres-1; r >= 0; --r)			// up
-	// 	for (int c = 0; c <= vres; c++) {	// across 					
 			ray.o = Point3D(s * (c - hres / 2.0 + 0.5), s * (r - vres / 2.0 + 0.5), zw);
 			pixel_color = tracer_ptr->trace_ray(ray);
 			display_pixel(r, c, pixel_color);
