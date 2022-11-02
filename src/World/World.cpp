@@ -1,7 +1,9 @@
-// this file contains the definition of the World class
+#include <cmath>
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+// this file contains the definition of the World class
 #include "World.h"
 #include "Constants.h"
 
@@ -19,6 +21,7 @@
 
 #include "Vector3D.h"
 #include "Point3D.h"
+#include "Point2D.h"
 #include "Normal.h"
 #include "ShadeRec.h"
 #include "Maths.h"
@@ -65,15 +68,30 @@ World::render_scene(void) const {
 	int 		vres 	= vp.vres;
 	float		s		= vp.s;
 	float		zw		= 100.0;			// hardwired in
+	int n = (int) std::sqrt((float) vp.num_samples);
+	Point2D pp;
+	
+	set_rand_seed(100);
 
+	// open_window(hres, vres);
 	imageData = new uint8_t [hres * vres * 3];
 
 	ray.d = Vector3D(0, 0, -1);
 	
 	for (int r = 0; r < vres; r++)			// up
-		for (int c = 0; c < hres; c++) {	// across 					
-			ray.o = Point3D(s * (c - hres / 2.0 + 0.5), s * (r - vres / 2.0 + 0.5), zw);
-			pixel_color = tracer_ptr->trace_ray(ray);
+		for (int c = 0; c < hres; c++) {	// across
+			pixel_color = black;
+
+			for (int p = 0; p < n; ++p) {
+				for (int q = 0; q < n; ++q){
+					pp.x = 	s * (c - hres * 0.5 + (q + rand_float()) / n);	
+					pp.y = 	s * (r - vres * 0.5 + (p + rand_float()) / n);	
+					ray.o = Point3D(pp.x, pp.y, zw);
+					pixel_color += tracer_ptr->trace_ray(ray);
+				}
+
+			}
+			pixel_color /= vp.num_samples;
 			display_pixel(r, c, pixel_color);
 		}
 
