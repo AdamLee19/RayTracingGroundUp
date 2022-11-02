@@ -60,7 +60,8 @@ set (SOURCE_TRACERS
 set (SOURCE_UTILITIES
 src/Utilities/Constants.h
 src/Utilities/Maths.h
-# src/Utilities/Maths.cpp
+src/Utilities/Point2D.h
+src/Utilities/Point2D.cpp
 src/Utilities/Matrix.cpp
 src/Utilities/Matrix.h
 src/Utilities/Normal.cpp
