@@ -1,9 +1,15 @@
+#include "Jittered.h"
 void 												
 World::build(void) {
-    vp.set_hres(200);
-	vp.set_vres(200);
+
+	int num_samples = 25;
+
+    vp.set_hres(400);
+	vp.set_vres(400);
 	vp.set_pixel_size(1.0);
 	vp.set_gamma(1.0);
+	vp.set_sampler(new Jittered(num_samples));
+
 	
 	background_color = white;
 	tracer_ptr = new SingleSphere(this); 
