@@ -15,6 +15,7 @@ include_directories("src/Tracers")
 include_directories("src/GeometricObjects")
 include_directories("src/Build")
 include_directories("src/Stb")
+include_directories("src/Samplers")
 
 
 
@@ -22,7 +23,6 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_CXX_FLAGS "-std=c++11 -O3")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 
 project (tracer VERSION 1.0
@@ -42,10 +42,25 @@ set (SOURCE_GEOMETRICOBJECTS
 )
 
 
+
 set (SOURCE_STB
   src/Stb/stb_image_write.h
 )
 
+set (SOURCE_SAMPLERS
+  src/Samplers/Sampler.h
+  src/Samplers/Sampler.cpp
+  src/Samplers/Jittered.h
+  src/Samplers/Jittered.cpp
+  src/Samplers/Regular.h
+  src/Samplers/Regular.cpp
+  src/Samplers/MultiJittered.h
+  src/Samplers/MultiJittered.cpp
+  src/Samplers/NRooks.h
+  src/Samplers/NRooks.cpp
+  src/Samplers/Hammersley.h
+  src/Samplers/Hammersley.cpp
+)
 
 
 set (SOURCE_TRACERS
@@ -89,6 +104,8 @@ source_group ("src/Tracers" FILES ${SOURCE_TRACERS})
 source_group ("src/Utilities" FILES ${SOURCE_UTILITIES})
 source_group ("src/World" FILES ${SOURCE_WORLD})
 source_group ("src/Stb" FILES ${SOURCE_STB})
+source_group ("src/Stb" FILES ${SOURCE_SAMPLERS})
+
 
 add_library (libRTF STATIC
   ${SOURCE_GEOMETRICOBJECTS}
@@ -96,6 +113,7 @@ add_library (libRTF STATIC
   ${SOURCE_UTILITIES}
   ${SOURCE_WORLD}
   ${SOURCE_STB}
+  ${SOURCE_SAMPLERS}
 )
 
 add_executable (tracer src/main.cpp)

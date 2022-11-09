@@ -1,6 +1,7 @@
 #ifndef __VIEW_PLANE__
 #define __VIEW_PLANE__
 
+#include "Sampler.h"
 //-------------------------------------------------------------------------------------- class ViewPlane
 
 class ViewPlane {
@@ -10,6 +11,7 @@ class ViewPlane {
 		float			s;							// pixel size
 
 		int 			num_samples;
+		Sampler* 		sampler_ptr;
 		
 		float			gamma;						// gamma correction factor
 		float			inv_gamma;					// the inverse of the gamma correction factor
@@ -43,7 +45,13 @@ class ViewPlane {
 		set_gamma(const float g);
 		
 		void
-		set_gamut_display(const bool show);				
+		set_gamut_display(const bool show);	
+
+		void
+		set_sampler(Sampler* sp);
+
+		void
+		set_samples(const int n);		
 };
 
 

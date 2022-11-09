@@ -68,10 +68,10 @@ World::render_scene(void) const {
 	int 		vres 	= vp.vres;
 	float		s		= vp.s;
 	float		zw		= 100.0;			// hardwired in
-	int n = (int) std::sqrt((float) vp.num_samples);
-	Point2D pp;
+	Point2D     sp;
+	Point2D     pp;
 	
-	set_rand_seed(100);
+	//set_rand_seed(100);
 
 	// open_window(hres, vres);
 	imageData = new uint8_t [hres * vres * 3];
@@ -82,14 +82,12 @@ World::render_scene(void) const {
 		for (int c = 0; c < hres; c++) {	// across
 			pixel_color = black;
 
-			for (int p = 0; p < n; ++p) {
-				for (int q = 0; q < n; ++q){
-					pp.x = 	s * (c - hres * 0.5 + (q + rand_float()) / n);	
-					pp.y = 	s * (r - vres * 0.5 + (p + rand_float()) / n);	
-					ray.o = Point3D(pp.x, pp.y, zw);
-					pixel_color += tracer_ptr->trace_ray(ray);
-				}
-
+			for (int j = 0; j < vp.num_samples; j++) {
+				sp = vp.sampler_ptr->sample_unit_square();
+				pp.x = 	s * (c - hres * 0.5 + sp.x);	
+				pp.y = 	s * (r - vres * 0.5 + sp.y);	
+				ray.o = Point3D(pp.x, pp.y, zw);
+				pixel_color += tracer_ptr->trace_ray(ray);
 			}
 			pixel_color /= vp.num_samples;
 			display_pixel(r, c, pixel_color);
