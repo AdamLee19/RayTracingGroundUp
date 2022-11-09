@@ -32,6 +32,7 @@ max(double x0, double x1)
 	return((x0 > x1) ? x0 : x1);
 }
 
+
 // ----------------------------------------------------------------- min
 inline double
 min(double x0, double x1) {
@@ -51,10 +52,12 @@ rand_float(){
 }
 
 // ----------------------------------------------------------------- set_rand_seed
+
 inline void
 set_rand_seed(const int seed){
 	srand(seed);
 }
+
 
 // ----------------------------------------------------------------- rand_float(low, high)
 inline float 
@@ -67,4 +70,5 @@ inline int
 rand_int(int l, int h) {
 	return ((int) (rand_float(0, h - l + 1) + l));
 }
+
 #endif
