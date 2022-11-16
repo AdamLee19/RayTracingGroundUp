@@ -16,6 +16,7 @@ include_directories("src/GeometricObjects")
 include_directories("src/Build")
 include_directories("src/Stb")
 include_directories("src/Samplers")
+include_directories("src/Cameras")
 
 
 
@@ -41,11 +42,15 @@ set (SOURCE_GEOMETRICOBJECTS
   src/GeometricObjects/Plane.h
 )
 
-
-
-set (SOURCE_STB
-  src/Stb/stb_image_write.h
+set (SOURCE_CAMERAS
+  src/Cameras/Camera.cpp
+  src/Cameras/Camera.h
+  src/Cameras/Pinhole.cpp
+  src/Cameras/Pinhole.h
 )
+
+
+
 
 set (SOURCE_SAMPLERS
   src/Samplers/Sampler.h
@@ -103,8 +108,8 @@ source_group ("src/GeometricObjects" FILES ${SOURCE_GEOMETRICOBJECTS})
 source_group ("src/Tracers" FILES ${SOURCE_TRACERS})
 source_group ("src/Utilities" FILES ${SOURCE_UTILITIES})
 source_group ("src/World" FILES ${SOURCE_WORLD})
-source_group ("src/Stb" FILES ${SOURCE_STB})
-source_group ("src/Stb" FILES ${SOURCE_SAMPLERS})
+source_group ("src/Samplers" FILES ${SOURCE_SAMPLERS})
+source_group ("src/Cameras" FILES ${SOURCE_CAMERAS})
 
 
 add_library (libRTF STATIC
@@ -112,8 +117,8 @@ add_library (libRTF STATIC
   ${SOURCE_TRACERS}
   ${SOURCE_UTILITIES}
   ${SOURCE_WORLD}
-  ${SOURCE_STB}
   ${SOURCE_SAMPLERS}
+  ${SOURCE_CAMERAS}
 )
 
 add_executable (tracer src/main.cpp)

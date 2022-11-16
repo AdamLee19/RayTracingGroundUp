@@ -1,4 +1,4 @@
-#include "Jittered.h"
+
 void 												
 World::build(void) {
 
@@ -16,4 +16,12 @@ World::build(void) {
 	
 	sphere.set_center(0.0);
 	sphere.set_radius(85);
+
+	Pinhole* camera_ptr = new Pinhole;
+	camera_ptr->set_eye(0, 0, 150);
+	camera_ptr->set_lookat(0);    
+	camera_ptr->set_view_distance(50); 
+	
+	camera_ptr->compute_uvw();		  
+	set_camera(camera_ptr);
 }
