@@ -96,7 +96,44 @@ World::render_scene(void) const {
 	stbi_write_jpg("test.jpg", hres, vres, 3, imageData, 100);	
 	delete[] imageData;
 }  
+void 												
+World::render_perspective(void) const {
 
+	RGBColor	pixel_color;	 	
+	Ray			ray;					
+	int 		hres 	= vp.hres;
+	int 		vres 	= vp.vres;
+	float		s		= vp.s;
+	float		d		= 50.0;			// hardwired in
+	float		eye		= 150.0;			// hardwired in
+	Point2D     sp;
+	Point2D     pp;
+	
+
+	// open_window(hres, vres);
+	imageData = new uint8_t [hres * vres * 3];
+
+	ray.o = Point3D(0, 0, eye);
+	
+	for (int r = 0; r < vres; r++)			// up
+		for (int c = 0; c < hres; c++) {	// across
+			pixel_color = black;
+
+			for (int j = 0; j < vp.num_samples; j++) {
+				sp = vp.sampler_ptr->sample_unit_square();
+				pp.x = 	s * (c - hres * 0.5 + sp.x);	
+				pp.y = 	s * (r - vres * 0.5 + sp.y);	
+				ray.d = Point3D(pp.x, pp.y, -d);
+				ray.d.normalize();
+				pixel_color += tracer_ptr->trace_ray(ray);
+			}
+			pixel_color /= vp.num_samples;
+			display_pixel(r, c, pixel_color);
+		}
+
+	stbi_write_jpg("test.jpg", hres, vres, 3, imageData, 100);	
+	delete[] imageData;
+}  
 
 // ------------------------------------------------------------------ clamp
 

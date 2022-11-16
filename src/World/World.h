@@ -52,6 +52,9 @@ class World {
 
 		void 												
 		render_scene(void) const;
+
+		void 												
+		render_perspective(void) const;
 						
 		RGBColor
 		max_to_one(const RGBColor& c) const;
