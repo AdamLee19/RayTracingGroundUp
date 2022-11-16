@@ -1,9 +1,7 @@
-#include <cmath>
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
 // this file contains the definition of the World class
+
+#include "wxraytracer.h"
+
 #include "World.h"
 #include "Constants.h"
 
@@ -16,32 +14,45 @@
 
 #include "SingleSphere.h"
 #include "MultipleObjects.h"
+#include "RayCast.h"
+
+// cameras
+
+#include "Pinhole.h"
+
+// lights
+
+#include "Directional.h"
+
+// materials
+
+#include "Matte.h"
 
 // utilities
 
 #include "Vector3D.h"
 #include "Point3D.h"
-#include "Point2D.h"
 #include "Normal.h"
 #include "ShadeRec.h"
 #include "Maths.h"
-#include "Jittered.h"
-#include "Pinhole.h"
 
 // build functions
 
-#include "BuildSingleSphere.cpp"
-// #include "BuildMultipleObjects.cpp"
-//#include "BuildBBCoverPic.cpp"
+#include "BuildShadedObjects.cpp"
 
 
 // -------------------------------------------------------------------- default constructor
 
+// tracer_ptr is set to NULL because the build functions will always construct the appropriate tracer
+// ambient_ptr is set to a default ambient light because this will do for most scenes
+// camera_ptr is set to NULL because the build functions will always have to construct a camera
+// and set its parameters
+
 World::World(void)
 	:  	background_color(black),
 		tracer_ptr(NULL),
-		camera_ptr(NULL),
-		image_ptr(NULL)
+		ambient_ptr(new Ambient),
+		camera_ptr(NULL)
 {}
 
 
@@ -54,20 +65,21 @@ World::~World(void) {
 		delete tracer_ptr;
 		tracer_ptr = NULL;
 	}
-
-	if(camera_ptr) {
+	
+		
+	if (ambient_ptr) {
+		delete ambient_ptr;
+		ambient_ptr = NULL;
+	}
+			
+		
+	if (camera_ptr) {
 		delete camera_ptr;
 		camera_ptr = NULL;
 	}
-
-
-	if(image_ptr) {
-		delete image_ptr;
-		image_ptr = NULL;
-	}		
-		
 	
 	delete_objects();	
+	delete_lights();				
 }
 
 
@@ -83,68 +95,18 @@ World::render_scene(void) const {
 	int 		hres 	= vp.hres;
 	int 		vres 	= vp.vres;
 	float		s		= vp.s;
-	float		zw		= 100.0;			// hardwired in
-	Point2D     sp;
-	Point2D     pp;
-	
-	//set_rand_seed(100);
-
-	// open_window(hres, vres);
+	float		zw		= 100.0;				// hardwired in
 
 	ray.d = Vector3D(0, 0, -1);
 	
 	for (int r = 0; r < vres; r++)			// up
-		for (int c = 0; c < hres; c++) {	// across
-			pixel_color = black;
-
-			for (int j = 0; j < vp.num_samples; j++) {
-				sp = vp.sampler_ptr->sample_unit_square();
-				pp.x = 	s * (c - hres * 0.5 + sp.x);	
-				pp.y = 	s * (r - vres * 0.5 + sp.y);	
-				ray.o = Point3D(pp.x, pp.y, zw);
-				pixel_color += tracer_ptr->trace_ray(ray);
-			}
-			pixel_color /= vp.num_samples;
+		for (int c = 0; c <= hres; c++) {	// across 					
+			ray.o = Point3D(s * (c - hres / 2.0 + 0.5), s * (r - vres / 2.0 + 0.5), zw);
+			pixel_color = tracer_ptr->trace_ray(ray);
 			display_pixel(r, c, pixel_color);
-		}
-
+		}	
 }  
 
-void 												
-World::render_perspective(void) const {
-
-	RGBColor	pixel_color;	 	
-	Ray			ray;					
-	int 		hres 	= vp.hres;
-	int 		vres 	= vp.vres;
-	float		s		= vp.s;
-	float		d		= 50.0;			// hardwired in
-	float		eye		= 150.0;			// hardwired in
-	Point2D     sp;
-	Point2D     pp;
-	
-
-	// open_window(hres, vres);
-
-	ray.o = Point3D(0, 0, eye);
-	
-	for (int r = 0; r < vres; r++)			// up
-		for (int c = 0; c < hres; c++) {	// across
-			pixel_color = black;
-
-			for (int j = 0; j < vp.num_samples; j++) {
-				sp = vp.sampler_ptr->sample_unit_square();
-				pp.x = 	s * (c - hres * 0.5 + sp.x);	
-				pp.y = 	s * (r - vres * 0.5 + sp.y);	
-				ray.d = Point3D(pp.x, pp.y, -d);
-				ray.d.normalize();
-				pixel_color += tracer_ptr->trace_ray(ray);
-			}
-			pixel_color /= vp.num_samples;
-			display_pixel(r, c, pixel_color);
-		}
-
-}  
 
 // ------------------------------------------------------------------ clamp
 
@@ -175,7 +137,6 @@ World::clamp_to_color(const RGBColor& raw_color) const {
 
 
 // ---------------------------------------------------------------------------display_pixel
-
 // raw_color is the pixel color computed by the ray tracer
 // its RGB floating point components can be arbitrarily large
 // mapped_color has all components in the range [0, 1], but still floating point
@@ -202,31 +163,42 @@ World::display_pixel(const int row, const int column, const RGBColor& raw_color)
    int x = column;
    int y = vp.vres - row - 1;
 
-	image_ptr[(y * vp.hres + x) * 3    ] = (uint8_t)(mapped_color.r * 255);
-	image_ptr[(y * vp.hres + x) * 3 + 1] = (uint8_t)(mapped_color.g * 255);
-	image_ptr[(y * vp.hres + x) * 3 + 2] = (uint8_t)(mapped_color.b * 255);
+   paintArea->setPixel(x, y, (int)(mapped_color.r * 255),
+                             (int)(mapped_color.g * 255),
+                             (int)(mapped_color.b * 255));
 }
 
-
-
-// ----------------------------------------------------------------------------- hit_bare_bones_objects
+// ----------------------------------------------------------------------------- hit_objects
 
 ShadeRec									
-World::hit_bare_bones_objects(const Ray& ray) {
+World::hit_objects(const Ray& ray) {
+
 	ShadeRec	sr(*this); 
-	double		t; 			
+	double		t;
+	Normal normal;
+	Point3D local_hit_point;
 	float		tmin 			= kHugeValue;
 	int 		num_objects 	= objects.size();
 	
 	for (int j = 0; j < num_objects; j++)
 		if (objects[j]->hit(ray, t, sr) && (t < tmin)) {
 			sr.hit_an_object	= true;
-			tmin 				= t; 
-			sr.color			= objects[j]->get_color(); 
+			tmin 				= t;
+			sr.material_ptr     = objects[j]->get_material();
+			sr.hit_point 		= ray.o + t * ray.d;
+			normal 				= sr.normal;
+			local_hit_point	 	= sr.local_hit_point;
 		}
+  
+	if(sr.hit_an_object) {
+		sr.t = tmin;
+		sr.normal = normal;
+		sr.local_hit_point = local_hit_point;
+	}
 		
-	return (sr);   
+	return(sr);   
 }
+
 
 
 //------------------------------------------------------------------ delete_objects
@@ -246,8 +218,18 @@ World::delete_objects(void) {
 	objects.erase (objects.begin(), objects.end());
 }
 
-//------------------------------------------------------------------ write_image
+
+//------------------------------------------------------------------ delete_lights
+
 void
-World::write_image(string img_name) const {
-	stbi_write_jpg(img_name.c_str(), vp.hres, vp.vres, 3, image_ptr, 100);
-}	
+World::delete_lights(void) {
+	int num_lights = lights.size();
+	
+	for (int j = 0; j < num_lights; j++) {
+		delete lights[j];
+		lights[j] = NULL;
+	}	
+	
+	lights.erase (lights.begin(), lights.end());
+}
+
