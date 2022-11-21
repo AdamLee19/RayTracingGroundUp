@@ -25,8 +25,9 @@
 #include "Normal.h"
 #include "ShadeRec.h"
 #include "Maths.h"
-#include "Jittered.h"
+#include "MultiJittered.h"
 #include "Pinhole.h"
+#include "ThinLens.h"
 
 // build functions
 
