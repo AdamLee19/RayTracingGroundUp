@@ -28,6 +28,7 @@
 #include "MultiJittered.h"
 #include "Pinhole.h"
 #include "ThinLens.h"
+#include "FishEye.h"
 
 // build functions
 

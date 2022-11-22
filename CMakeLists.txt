@@ -49,6 +49,8 @@ set (SOURCE_CAMERAS
   src/Cameras/Pinhole.h
   src/Cameras/ThinLens.cpp
   src/Cameras/ThinLens.h
+  src/Cameras/FishEye.cpp
+  src/Cameras/FishEye.h
 )
 
 
