@@ -1,14 +1,16 @@
 void 												
 World::build(void) {
-	vp.set_hres(200);
-	vp.set_vres(200);
+	int num_samples = 100;
+
+    vp.set_hres(400);
+	vp.set_vres(400);
 	vp.set_pixel_size(1.0);
-	vp.set_number_samples(25);
+	vp.set_gamma(1.0);
+	vp.set_sampler(new MultiJittered(num_samples));
+
 	
+	background_color = white;
 	tracer_ptr = new MultipleObjects(this); 
-	
-	background_color = RGBColor(black);
-	
 	// use access functions to set centre and radius
 	
 	Sphere* sphere_ptr = new Sphere;
@@ -26,4 +28,14 @@ World::build(void) {
 	Plane* plane_ptr = new Plane(Point3D(0), Normal(0, 1, 1));
 	plane_ptr->set_color(0.0, 0.3, 0.0);	// dark green
 	add_object(plane_ptr);
+
+	Spherical* camera_ptr = new Spherical;
+	camera_ptr->set_horizontal_fov(360);
+	camera_ptr->set_vertical_fov(180);
+	
+	camera_ptr->set_eye(0, 0, 250);
+	camera_ptr->set_lookat(0);    
+	
+	camera_ptr->compute_uvw();		  
+	set_camera(camera_ptr);
 }

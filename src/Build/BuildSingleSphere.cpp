@@ -14,13 +14,14 @@ World::build(void) {
 	background_color = white;
 	tracer_ptr = new SingleSphere(this); 
 	
-	sphere.set_center(0, 0, 150.0);
-	sphere.set_radius(10);
+	sphere.set_center(0);
+	sphere.set_radius(5);
 
-	FishEye* camera_ptr = new FishEye;
-	camera_ptr->set_fov(360);
+	Spherical* camera_ptr = new Spherical;
+	camera_ptr->set_horizontal_fov(45);
+	camera_ptr->set_vertical_fov(45);
 	
-	camera_ptr->set_eye(0, 0, 90);
+	camera_ptr->set_eye(0, 0, 180);
 	camera_ptr->set_lookat(0);    
 	
 	camera_ptr->compute_uvw();		  

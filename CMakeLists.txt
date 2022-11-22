@@ -51,6 +51,8 @@ set (SOURCE_CAMERAS
   src/Cameras/ThinLens.h
   src/Cameras/FishEye.cpp
   src/Cameras/FishEye.h
+  src/Cameras/Spherical.cpp
+  src/Cameras/Spherical.h
 )
 
 

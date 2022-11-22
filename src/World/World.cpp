@@ -29,11 +29,12 @@
 #include "Pinhole.h"
 #include "ThinLens.h"
 #include "FishEye.h"
+#include "Spherical.h"
 
 // build functions
 
-#include "BuildSingleSphere.cpp"
-// #include "BuildMultipleObjects.cpp"
+// #include "BuildSingleSphere.cpp"
+#include "BuildMultipleObjects.cpp"
 //#include "BuildBBCoverPic.cpp"
 
 

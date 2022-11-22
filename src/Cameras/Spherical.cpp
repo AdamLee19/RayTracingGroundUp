@@ -3,44 +3,47 @@
 #include "Constants.h" 
 #include "Point3D.h"
 #include "Vector3D.h"
-#include "FishEye.h"
+#include "Spherical.h"
 #include <math.h>
 
 // ----------------------------------------------------------------------------- default constructor
 
-FishEye::FishEye(void)		
+Spherical::Spherical(void)		
 	:	Camera(),
-		psi_max(180)
+		psi_max(120),
+		lambda_max(120)
 {}
 
 
 // ----------------------------------------------------------------------------- copy constructor
 
-FishEye::FishEye(const FishEye& fe)
-	: 	Camera(fe),
-		psi_max(fe.psi_max)
+Spherical::Spherical(const Spherical& s)
+	: 	Camera(s),
+		psi_max(s.psi_max),
+		lambda_max(s.lambda_max)
 {}
 
 
 // ----------------------------------------------------------------------------- clone
 
 Camera* 
-FishEye::clone(void) const {
-	return (new FishEye(*this));
+Spherical::clone(void) const {
+	return (new Spherical(*this));
 }
 
 
 
 // ----------------------------------------------------------------------------- assignment operator
 
-FishEye& 
-FishEye::operator= (const FishEye& rhs) { 	
+Spherical& 
+Spherical::operator= (const Spherical& rhs) { 	
 	if (this == &rhs)
 		return (*this);
 		
 	Camera::operator= (rhs);
 
 	psi_max 		= rhs.psi_max;
+	lambda_max      = rhs.lambda_max;
 
 	return (*this);
 }
@@ -48,30 +51,37 @@ FishEye::operator= (const FishEye& rhs) {
 
 // ----------------------------------------------------------------------------- destructor
 
-FishEye::~FishEye(void) {}	
+Spherical::~Spherical(void) {}	
 
 
 // ----------------------------------------------------------------------------- ray_direction
 
 Vector3D 
-FishEye::ray_direction(const Point2D& pp, const int hres,
-			const int vres, const float s, float& r_squared) const{
+Spherical::ray_direction(const Point2D& pp, const int hres,
+			const int vres, const float s) const{
 
-    Point2D pn(2.0f / (s * hres) * pp.x, 2.0f / (s * vres) * pp.y);
-    r_squared = pn.x * pn.x + pn.y * pn.y;
+    // compute the normalized device coordinates
 
-    if (r_squared <= 1.0f) {
-        float r = sqrtf(r_squared);
-        float psi = r * psi_max * PI_ON_180;
-        float sin_psi = sinf(psi);
-        float cos_psi = cosf(psi);
-        float sin_alpha = pn.y / r;
-        float cos_alpha = pn.x / r;
-        Vector3D dir = sin_psi * cos_alpha * u + sin_psi * sin_alpha * v - cos_psi * w;
+    Point2D pn(2.0f / (s * static_cast<float>(hres)) * pp.x, 2.0f / (s * static_cast<float>(vres)) * pp.y);
 
-        return dir;
-    } else
-        return Vector3D(0.0f);
+    // compute the angles lambda and psi in radians
+
+    float lambda = pn.x * lambda_max * PI_ON_180;
+    float psi = pn.y * psi_max * PI_ON_180;
+
+    // compute the sherical azimuth and polar angles
+
+    float phi = PI - lambda;
+    float theta = 0.5f * PI - psi;
+
+    float sin_phi = sinf(phi);
+    float cos_phi = cosf(phi);
+    float sin_theta = sinf(theta);
+    float cos_theta = cosf(theta);
+
+    Vector3D dir = sin_theta * sin_phi * u + cos_theta * v + sin_theta * cos_phi * w;
+
+    return dir;
 }
 
 
@@ -79,7 +89,7 @@ FishEye::ray_direction(const Point2D& pp, const int hres,
 // ----------------------------------------------------------------------------- render_scene
 
 void 												
-FishEye::render_scene(const World& w) {
+Spherical::render_scene(const World& w) {
 	RGBColor L;
     ViewPlane vp(w.vp);
 	float s = vp.s;
@@ -90,7 +100,6 @@ FishEye::render_scene(const World& w) {
 
     Point2D sp; // Sample point in unity square
     Point2D pp; // Sample point on pixel
-    float r_squared;
 
 
 	
@@ -105,12 +114,10 @@ FishEye::render_scene(const World& w) {
 				pp.y = 	s * (r - vres * 0.5 + sp.y);
 
 				
-				ray.d = ray_direction(pp, hres, vres, s, r_squared);
+				ray.d = ray_direction(pp, hres, vres, s);
 
-				if (r_squared <= 1.0){
-					L += w.tracer_ptr->trace_ray(ray);
-				}
 				
+				L += w.tracer_ptr->trace_ray(ray);
 					
 			}	
 											
