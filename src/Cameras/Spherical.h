@@ -38,7 +38,7 @@ class Spherical: public Camera {
 			const int vres, const float s) const;
 		
 		virtual void 												
-		render_scene(const World& w);
+		render_scene(World& w);
 		
 	private:
 		

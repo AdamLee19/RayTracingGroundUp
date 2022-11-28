@@ -89,7 +89,7 @@ Spherical::ray_direction(const Point2D& pp, const int hres,
 // ----------------------------------------------------------------------------- render_scene
 
 void 												
-Spherical::render_scene(const World& w) {
+Spherical::render_scene(World& w) {
 	RGBColor L;
     ViewPlane vp(w.vp);
 	float s = vp.s;
@@ -101,7 +101,7 @@ Spherical::render_scene(const World& w) {
     Point2D sp; // Sample point in unity square
     Point2D pp; // Sample point on pixel
 
-
+	w.open_window(hres, vres);
 	
 	ray.o = eye;
 	for (int r = 0; r < vp.vres; r++)			// up

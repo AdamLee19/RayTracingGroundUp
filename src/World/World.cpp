@@ -30,11 +30,12 @@
 #include "ThinLens.h"
 #include "FishEye.h"
 #include "Spherical.h"
+#include "StereoCamera.h"
 
 // build functions
 
-// #include "BuildSingleSphere.cpp"
-#include "BuildMultipleObjects.cpp"
+#include "BuildSingleSphere.cpp"
+// #include "BuildMultipleObjects.cpp"
 //#include "BuildBBCoverPic.cpp"
 
 
@@ -205,9 +206,9 @@ World::display_pixel(const int row, const int column, const RGBColor& raw_color)
    int x = column;
    int y = vp.vres - row - 1;
 
-	image_ptr[(y * vp.hres + x) * 3    ] = (uint8_t)(mapped_color.r * 255);
-	image_ptr[(y * vp.hres + x) * 3 + 1] = (uint8_t)(mapped_color.g * 255);
-	image_ptr[(y * vp.hres + x) * 3 + 2] = (uint8_t)(mapped_color.b * 255);
+	image_ptr[(y * width + x) * 3    ] = (uint8_t)(mapped_color.r * 255);
+	image_ptr[(y * width + x) * 3 + 1] = (uint8_t)(mapped_color.g * 255);
+	image_ptr[(y * width + x) * 3 + 2] = (uint8_t)(mapped_color.b * 255);
 }
 
 
@@ -252,5 +253,5 @@ World::delete_objects(void) {
 //------------------------------------------------------------------ write_image
 void
 World::write_image(string img_name) const {
-	stbi_write_jpg(img_name.c_str(), vp.hres, vp.vres, 3, image_ptr, 100);
+	stbi_write_jpg(img_name.c_str(), width, height, 3, image_ptr, 100);
 }	

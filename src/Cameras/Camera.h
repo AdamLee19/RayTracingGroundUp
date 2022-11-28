@@ -31,7 +31,10 @@ class Camera {
 		~Camera();   							
 
 		virtual void 																		
-		render_scene(const World& w) = 0;
+		render_scene(World& w) = 0;
+
+		virtual void 																		
+		render_stereo(World& w, float x, int pixel_offset){};
 		
 		void
 		set_eye(const Point3D& p);

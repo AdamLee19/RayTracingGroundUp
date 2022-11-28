@@ -10,6 +10,7 @@
 #include "Point3D.h"
 #include "Vector3D.h"
 #include "Pinhole.h"
+#include "RGBColor.h"
 #include <math.h>
 #include <iostream>
 // ----------------------------------------------------------------------------- default constructor
@@ -70,22 +71,58 @@ Pinhole::get_direction(const Point2D& p) const {
 	return(dir);
 }
 
+// ----------------------------------------------------------------------------- render_stereo
+void						
+Pinhole::render_stereo(World& w, float x, int pixel_offset) {
+	RGBColor	L;	 	
+	Ray			ray;
+	ViewPlane	vp 			= w.vp;					
+	int 		depth 		= 0;  
+	Point2D 	sp; 				// sample point in [0, 1] X [0, 1]
+	Point2D 	pp;					// sample point on the pixel
+	
+	vp.s /= zoom;	
+	ray.o = eye;
+	
+	for (int r = 0; r < vp.vres; r++)			// up
+		for (int c = 0; c < vp.hres; c++) {		// across 					
+			L = black; 	
+
+			for (int j = 0; j < vp.num_samples; j++) {	
+				sp = vp.sampler_ptr->sample_unit_square();
+				pp.x = vp.s * (c - 0.5 * vp.hres + sp.x) + x; 	// asymmetric view frustum
+				pp.y = vp.s * (r - 0.5 * vp.vres + sp.y);
+				ray.d = get_direction(pp);				
+				L += w.tracer_ptr->trace_ray(ray);
+			}
+										
+			L /= vp.num_samples;
+			L *= exposure_time;	
+			w.display_pixel(r, c + pixel_offset, L);
+		} 
+}
+
 
 
 // ----------------------------------------------------------------------------- render_scene
 
 void 												
-Pinhole::render_scene(const World& w) {
+Pinhole::render_scene(World& w) {
 	RGBColor	L;
 	ViewPlane	vp(w.vp);	 								
 	Ray			ray;
+	int hres = vp.hres;
+	int vres = vp.vres;
 	int 		depth = 0;  
 	Point2D 	pp;		// sample point on a pixel
 	Point2D 	sp;		// sample point on a pixel
 		
 	vp.s /= zoom;
 	ray.o = eye;
-		
+	
+	w.open_window(hres, vres);
+
+
 	for (int r = 0; r < vp.vres; r++)			// up
 		for (int c = 0; c < vp.hres; c++) {		// across 					
 			L = black;

@@ -36,6 +36,8 @@ class World {
 	public:
 	
 		ViewPlane					vp;
+		int                         width;
+		int                         height;
 		RGBColor					background_color;
 		Tracer*						tracer_ptr;
 		Sphere 						sphere;		// for Chapter 3 only
@@ -63,7 +65,7 @@ class World {
 		set_camera(Camera* c_ptr);
 		
 		void
-		set_image();
+		open_window(const int w, const int h);
 
 		void
 		write_image(string img_name) const;
@@ -84,6 +86,7 @@ class World {
 		hit_bare_bones_objects(const Ray& ray);
 
 	private:
+
 		
 		void 
 		delete_objects(void);
@@ -104,10 +107,12 @@ World::set_camera(Camera* c_ptr) {
 	camera_ptr = c_ptr;
 }
 
-// ------------------------------------------------------------------ set_camera
+// ------------------------------------------------------------------ open_window
 inline void
-World::set_image() {
-	image_ptr = new uint8_t [vp.hres * vp.vres * 3];
+World::open_window(const int w, const int h) {
+	width = w;
+	height = h;
+	image_ptr = new uint8_t [w * h * 3];
 }
 	
 #endif

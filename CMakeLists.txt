@@ -53,6 +53,8 @@ set (SOURCE_CAMERAS
   src/Cameras/FishEye.h
   src/Cameras/Spherical.cpp
   src/Cameras/Spherical.h
+  src/Cameras/StereoCamera.cpp
+  src/Cameras/StereoCamera.h
 )
 
 

@@ -41,7 +41,10 @@ class Pinhole: public Camera {
 		get_direction(const Point2D& p) const;
 		
 		virtual void 												
-		render_scene(const World& w);
+		render_scene(World& w);
+
+		void
+		render_stereo(World& w, float x, int pixel_offset);
 		
 	private:
 			

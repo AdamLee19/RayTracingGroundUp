@@ -89,7 +89,7 @@ ThinLens::ray_direction(const Point2D& pixel_point, const Point2D& lens_point) c
 // ----------------------------------------------------------------------------- render_scene
 
 void 												
-ThinLens::render_scene(const World& w) {
+ThinLens::render_scene(World& w) {
 	RGBColor L;
     Ray ray;
     ViewPlane vp(w.vp);
@@ -103,8 +103,10 @@ ThinLens::render_scene(const World& w) {
 	vp.s /= zoom;
 
 	float s = vp.s;
-	float hres = vp.hres;
-	float vres = vp.vres;
+	int hres = vp.hres;
+	int vres = vp.vres;
+
+	w.open_window(hres, vres);
 
 	for (int r = 0; r < vp.vres; r++)			// up
 		for (int c = 0; c < vp.hres; c++) {		// across 					

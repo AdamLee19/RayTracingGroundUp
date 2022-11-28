@@ -42,7 +42,7 @@ class ThinLens: public Camera {
 		ray_direction(const Point2D& pixel_point, const Point2D& lens_point) const;
 		
 		virtual void 												
-		render_scene(const World& w);
+		render_scene(World& w);
 		
 	private:
 		

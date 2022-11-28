@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
     World w;
     w.build();
-    w.set_image();
+
     w.camera_ptr->render_scene(w);
     w.write_image("test.jpg");
     return 0;

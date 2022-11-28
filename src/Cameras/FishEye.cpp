@@ -79,7 +79,7 @@ FishEye::ray_direction(const Point2D& pp, const int hres,
 // ----------------------------------------------------------------------------- render_scene
 
 void 												
-FishEye::render_scene(const World& w) {
+FishEye::render_scene(World& w) {
 	RGBColor L;
     ViewPlane vp(w.vp);
 	float s = vp.s;
@@ -93,7 +93,8 @@ FishEye::render_scene(const World& w) {
     float r_squared;
 
 
-	
+	w.open_window(hres, vres);
+		
 	ray.o = eye;
 	for (int r = 0; r < vp.vres; r++)			// up
 		for (int c = 0; c < vp.hres; c++) {		// across 					

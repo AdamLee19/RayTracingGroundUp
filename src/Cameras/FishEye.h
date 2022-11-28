@@ -36,7 +36,7 @@ class FishEye: public Camera {
 			const int vres, const float s, float& r_squared) const;
 		
 		virtual void 												
-		render_scene(const World& w);
+		render_scene(World& w);
 		
 	private:
 		

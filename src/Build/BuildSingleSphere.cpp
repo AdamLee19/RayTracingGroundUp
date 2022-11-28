@@ -16,14 +16,26 @@ World::build(void) {
 	
 	sphere.set_center(0);
 	sphere.set_radius(5);
-
-	Spherical* camera_ptr = new Spherical;
-	camera_ptr->set_horizontal_fov(45);
-	camera_ptr->set_vertical_fov(45);
 	
+	float vpd = 100;
+	Pinhole* left_camera_ptr = new Pinhole;
+	left_camera_ptr->set_view_distance(vpd);
+	
+
+	Pinhole* right_camera_ptr = new Pinhole;
+	right_camera_ptr->set_view_distance(vpd);
+	
+	StereoCamera* camera_ptr = new StereoCamera;
+	camera_ptr->set_left_camera(left_camera_ptr);
+	camera_ptr->set_right_camera(right_camera_ptr);
+	camera_ptr->use_parallel_viewing();
+	
+	camera_ptr->set_pixel_gap(5);
 	camera_ptr->set_eye(0, 0, 180);
 	camera_ptr->set_lookat(0);    
 	
-	camera_ptr->compute_uvw();		  
+	camera_ptr->compute_uvw();
+	camera_ptr->set_stereo_angle(0.75);
+	camera_ptr->setup_cameras();	  
 	set_camera(camera_ptr);
 }
